@@ -1,0 +1,9 @@
+{
+  "name":"pattern",
+  "short_name":"pattern",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f4f1eb",
+  "theme_color":"#f4f1eb",
+  "description":"A visual MIDI backing pattern library"
+}

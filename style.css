@@ -1,0 +1,69 @@
+:root {
+  --paper:#f4f1eb;
+  --card:#fbfaf7;
+  --ink:#24252a;
+  --muted:#8c8b91;
+  --line:#dcd8d0;
+  --accent:#6d64f5;
+  --accent2:#8f87ff;
+  --mint:#bdebdc;
+  --shadow:0 18px 46px rgba(53,50,63,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif}
+body{background:radial-gradient(circle at 86% 4%,rgba(143,135,255,.13),transparent 24rem),var(--paper)}
+button,label{font:inherit;-webkit-tap-highlight-color:transparent}
+button{color:inherit}
+.shell{max-width:1440px;margin:auto;padding:52px clamp(24px,5vw,74px) 90px}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);padding-bottom:28px}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.22em;color:#98969a;margin-bottom:5px}
+h1{font-size:clamp(48px,6vw,82px);letter-spacing:-.065em;line-height:.8;margin:0;font-weight:650}
+h1 span{color:var(--accent)}
+.add-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid #cfcac3;background:rgba(255,255,255,.6);border-radius:999px;padding:12px 18px;font-size:11px;font-weight:800;letter-spacing:.11em;cursor:pointer;transition:.2s}
+.add-btn span{font-size:18px;line-height:10px;font-weight:400;color:var(--accent)}
+.add-btn:hover{background:white;transform:translateY(-1px);box-shadow:0 8px 22px rgba(53,50,63,.07)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin:28px 0 20px}
+.segmented{display:flex;gap:6px}
+.segmented button{border:0;background:transparent;color:#9a989c;padding:9px 11px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.13em;cursor:pointer}
+.segmented button.active{color:var(--ink);background:#fff;box-shadow:0 4px 15px rgba(53,50,63,.06)}
+.count{font-size:10px;color:#aaa6a1;font-weight:700;letter-spacing:.12em}
+.dropzone{display:flex;align-items:center;gap:14px;border:1px dashed #c9c4bd;border-radius:18px;padding:14px 18px;margin-bottom:24px;color:#706d71;transition:.2s}
+.dropzone strong{display:block;font-size:10px;letter-spacing:.14em}
+.dropzone small{display:block;margin-top:3px;color:#aaa6a1;font-size:11px}
+.drop-mark{width:30px;height:30px;display:grid;place-items:center;background:#e9e5ff;color:var(--accent);border-radius:9px;font-weight:800}
+.dropzone.dragover{background:#eeebff;border-color:var(--accent);transform:scale(1.005)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:rgba(251,250,247,.92);border:1px solid rgba(210,205,197,.9);border-radius:22px;padding:18px;box-shadow:0 1px 0 rgba(255,255,255,.8);transition:transform .2s,box-shadow .2s,border-color .2s;min-width:0}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#cbc5bb}
+.card-head{height:26px;display:flex;justify-content:space-between;align-items:flex-start}
+.pattern-no{font-size:10px;font-weight:800;letter-spacing:.14em;color:#9b9894}
+.favorite-btn{border:0;background:transparent;font-size:19px;color:#b6b1ab;cursor:pointer;line-height:1}
+.favorite-btn.on{color:#756cf5}
+.visual-button{position:relative;width:100%;height:190px;border:0;border-radius:15px;background:#ebe8e1;padding:0;overflow:hidden;cursor:pointer;display:block}
+.roll{width:100%;height:100%;display:block}
+.visual-button:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.1),transparent 55%);pointer-events:none}
+.beat-strip{position:absolute;inset:auto 10px 8px;display:grid;grid-template-columns:repeat(4,1fr);font-size:8px;font-weight:700;color:rgba(59,57,67,.34);text-align:left;pointer-events:none}
+.play-pill{position:absolute;left:12px;top:12px;width:31px;height:31px;border-radius:50%;display:grid;place-items:center;padding-left:2px;font-size:9px;background:rgba(252,251,248,.85);box-shadow:0 5px 18px rgba(40,38,48,.09);opacity:0;transform:scale(.9);transition:.18s}
+.visual-button:hover .play-pill,.card.playing .play-pill{opacity:1;transform:scale(1)}
+.card.playing .play-pill{background:var(--accent);color:white}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--accent);left:0;opacity:0;box-shadow:0 0 14px rgba(109,100,245,.5);pointer-events:none}
+.card.playing .playhead{opacity:1;animation:sweep var(--duration,2s) linear forwards}
+@keyframes sweep{from{left:0}to{left:100%}}
+.card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:14px;gap:10px}
+.meta{display:flex;gap:9px;font-size:8px;font-weight:800;letter-spacing:.1em;color:#aaa6a1;white-space:nowrap}
+.uses{color:#817aeb}
+.actions{display:flex;gap:6px;align-items:center}
+.actions button{height:32px;border-radius:9px;cursor:pointer;font-size:9px;font-weight:850;letter-spacing:.12em}
+.icon-action{width:32px;border:1px solid #d8d3cb;background:#f6f3ee;font-size:13px!important;color:#77727a}
+.copy-action{border:0;background:var(--ink);color:#fff;padding:0 14px;min-width:62px}
+.copy-action:hover{background:var(--accent)}
+.empty{text-align:center;padding:75px 20px 30px;color:#8d8988}
+.empty-roll{width:210px;height:86px;margin:0 auto 25px;border-radius:18px;background:#e9e5df;position:relative;overflow:hidden}
+.empty-roll:before,.empty-roll:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 24.5%,rgba(100,96,107,.07) 25%,transparent 25.5%,transparent 49.5%,rgba(100,96,107,.07) 50%,transparent 50.5%,transparent 74.5%,rgba(100,96,107,.07) 75%,transparent 75.5%)}
+.empty-roll i{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:6px;border-radius:3px;background:#bab4ff}
+.empty h2{font-size:17px;color:#5c595b;margin:0 0 7px}
+.empty p{font-size:12px;margin:0}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#25262a;color:white;border-radius:999px;padding:11px 18px;font-size:11px;font-weight:700;opacity:0;pointer-events:none;transition:.2s;z-index:10;box-shadow:0 10px 35px rgba(0,0,0,.15)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.visual-button{height:175px}}
+@media(max-width:620px){.shell{padding:34px 16px 70px}.topbar{align-items:center}.eyebrow{font-size:8px}h1{font-size:49px}.add-btn{padding:11px 13px}.add-btn span{display:none}.toolbar{margin-top:20px}.grid{grid-template-columns:1fr}.dropzone small{display:none}.visual-button{height:190px}.segmented button{padding:8px;font-size:9px}}
