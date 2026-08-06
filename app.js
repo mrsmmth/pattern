@@ -49,11 +49,12 @@ function tickToSeconds(tick,m){let last=0,sec=0,us=500000;for(const t of m.tempo
 function drawRoll(canvas,m){
   const dpr=Math.min(devicePixelRatio||1,2),rect=canvas.getBoundingClientRect();canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
   const c=canvas.getContext('2d');c.scale(dpr,dpr);const w=rect.width,h=rect.height;
-  c.fillStyle='#ebe8e1';c.fillRect(0,0,w,h);
-  for(let i=1;i<4;i++){c.strokeStyle='rgba(78,75,87,.09)';c.lineWidth=1;c.beginPath();c.moveTo(w*i/4,0);c.lineTo(w*i/4,h);c.stroke()}
-  const four=m.division*4, visible=m.notes.filter(n=>n.tick<four); if(!visible.length)return;
+  c.fillStyle='#262824';c.fillRect(0,0,w,h);
+  for(let i=1;i<4;i++){c.strokeStyle='rgba(230,224,210,.10)';c.lineWidth=1;c.beginPath();c.moveTo(w*i/4,0);c.lineTo(w*i/4,h);c.stroke()}
+  const first=m.notes.length?Math.min(...m.notes.map(n=>n.tick)):0,four=m.division*4,end=first+four, visible=m.notes.filter(n=>n.end>first&&n.tick<end); if(!visible.length)return;
   let lo=Math.min(...visible.map(n=>n.pitch)),hi=Math.max(...visible.map(n=>n.pitch));lo-=2;hi+=2;const range=Math.max(hi-lo,9);
-  for(const n of visible){const x=n.tick/four*w,y=h-18-(n.pitch-lo)/range*(h-38),nw=Math.max(4,(Math.min(n.end,four)-n.tick)/four*w);c.fillStyle=n.pitch===Math.min(...visible.map(x=>x.pitch))?'#8179ed':'#55515c';c.beginPath();roundRect(c,x+2,y-3,nw-3,7,3);c.fill()}
+  const lowPitch=Math.min(...visible.map(x=>x.pitch));
+  for(const n of visible){const x=(Math.max(n.tick,first)-first)/four*w,y=h-18-(n.pitch-lo)/range*(h-38),nw=Math.max(4,(Math.min(n.end,end)-Math.max(n.tick,first))/four*w);c.fillStyle=n.pitch===lowPitch?'#c89454':'#d8d1c3';c.beginPath();roundRect(c,x+2,y-3,nw-3,7,3);c.fill()}
 }
 function roundRect(c,x,y,w,h,r){w=Math.max(w,1);c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r)}
 
@@ -80,16 +81,17 @@ function render(){
     fav.onclick=async()=>{p.favorite=!p.favorite;await dbPut(p);render()};
     visual.onclick=()=>preview(p,el,m);
     visual.addEventListener('dragstart',e=>dragMidi(e,p));
-    el.querySelector('.copy-action').onclick=()=>copyMidi(p);
-    el.querySelector('.drag-action').onclick=()=>downloadMidi(p);
+    const drag=el.querySelector('.drag-handle');drag.addEventListener('dragstart',e=>dragMidi(e,p));
+    drag.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')downloadMidi(p)});
+    el.querySelector('.export-action').onclick=()=>downloadMidi(p);
   });
 }
 
 function preview(p,card,m){
   if(activeStop){activeStop();activeStop=null;document.querySelectorAll('.playing').forEach(x=>x.classList.remove('playing'))}
-  audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();const start=audioCtx.currentTime+.04,four=m.division*4,shown=m.notes.filter(n=>n.tick<four);
-  const duration=Math.max(.2,tickToSeconds(four,m)); card.style.setProperty('--duration',duration+'s');card.classList.add('playing');
-  const nodes=[]; for(const n of shown){const st=start+tickToSeconds(n.tick,m),en=start+Math.min(duration,tickToSeconds(Math.min(n.end,four),m));const o=audioCtx.createOscillator(),g=audioCtx.createGain(),lp=audioCtx.createBiquadFilter();o.type='triangle';o.frequency.value=440*Math.pow(2,(n.pitch-69)/12);lp.type='lowpass';lp.frequency.value=2200;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(Math.max(.012,n.velocity/127*.065),st+.008);g.gain.exponentialRampToValueAtTime(.0001,Math.max(st+.03,en));o.connect(lp).connect(g).connect(audioCtx.destination);o.start(st);o.stop(Math.max(st+.04,en+.02));nodes.push(o)}
+  audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();const start=audioCtx.currentTime+.04,first=m.notes.length?Math.min(...m.notes.map(n=>n.tick)):0,four=m.division*4,endTick=first+four,baseSec=tickToSeconds(first,m),shown=m.notes.filter(n=>n.end>first&&n.tick<endTick);
+  const duration=Math.max(.2,tickToSeconds(endTick,m)-baseSec); card.style.setProperty('--duration',duration+'s');card.classList.add('playing');
+  const nodes=[]; for(const n of shown){const st=start+Math.max(0,tickToSeconds(Math.max(n.tick,first),m)-baseSec),en=start+Math.min(duration,tickToSeconds(Math.min(n.end,endTick),m)-baseSec);const o=audioCtx.createOscillator(),g=audioCtx.createGain(),lp=audioCtx.createBiquadFilter();o.type='triangle';o.frequency.value=440*Math.pow(2,(n.pitch-69)/12);lp.type='lowpass';lp.frequency.value=2200;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(Math.max(.012,n.velocity/127*.065),st+.008);g.gain.exponentialRampToValueAtTime(.0001,Math.max(st+.03,en));o.connect(lp).connect(g).connect(audioCtx.destination);o.start(st);o.stop(Math.max(st+.04,en+.02));nodes.push(o)}
   const timer=setTimeout(()=>{card.classList.remove('playing');activeStop=null},duration*1000+100);activeStop=()=>{clearTimeout(timer);nodes.forEach(n=>{try{n.stop()}catch{}})};
 }
 
@@ -102,12 +104,6 @@ function dragMidi(e,p){
   e.dataTransfer.setData('text/uri-list',url);
   setTimeout(()=>URL.revokeObjectURL(url),30000);
   countUse(p);
-}
-async function copyMidi(p){
-  const blob=blobOf(p);let ok=false;
-  try{if(navigator.clipboard&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'audio/midi':blob})]);ok=true}}catch{}
-  if(ok){await countUse(p);showToast('COPIED — LOGICで ⌘V');render()}
-  else{showToast('DIRECT COPY 未対応 — MIDIを書き出します');setTimeout(()=>downloadMidi(p),450)}
 }
 async function downloadMidi(p){const a=document.createElement('a');a.href=URL.createObjectURL(blobOf(p));a.download=p.fileName||'pattern.mid';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);await countUse(p);showToast('MIDI READY');render()}
 function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove('show'),1800)}

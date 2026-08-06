@@ -11,43 +11,37 @@
 </head>
 <body>
   <main class="shell">
-    <header class="topbar">
-      <div>
-        <div class="eyebrow">MIDI BACKING LIBRARY</div>
+    <header class="topbar hardware-panel">
+      <i class="screw s1"></i><i class="screw s2"></i>
+      <div class="brand-block">
+        <div class="eyebrow">MIDI PATTERN ARCHIVE · PTN-01</div>
         <h1>pattern<span>.</span></h1>
       </div>
-      <label class="add-btn" for="midiInput" aria-label="MIDIを追加">
-        <span>＋</span> ADD MIDI
-      </label>
+      <div class="studio-status" aria-hidden="true">
+        <div><i></i><small>READY</small></div>
+        <div><i class="amber"></i><small>LOCAL</small></div>
+      </div>
+      <label class="add-btn" for="midiInput" aria-label="MIDIを追加"><span>＋</span> LOAD MIDI</label>
       <input id="midiInput" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" multiple hidden />
     </header>
 
-    <section class="toolbar" aria-label="表示設定">
+    <section class="toolbar hardware-panel" aria-label="表示設定">
       <div class="segmented" id="sortTabs">
         <button class="active" data-sort="recent">RECENT</button>
         <button data-sort="used">USED</button>
         <button data-sort="favorite">FAVORITE</button>
       </div>
+      <div class="drop-inline" id="dropzone"><b>↓</b><span>DROP MIDI</span></div>
       <div class="count" id="patternCount">0 PATTERNS</div>
     </section>
-
-    <section class="dropzone" id="dropzone">
-      <div class="drop-mark">↘</div>
-      <div>
-        <strong>DROP MIDI HERE</strong>
-        <small>名前も整理もいらない。入れた瞬間、棚に追加。</small>
-      </div>
-    </section>
-
-    <section class="grid" id="patternGrid" aria-live="polite"></section>
-
-    <section class="empty" id="emptyState">
-      <div class="empty-roll" aria-hidden="true">
-        <i style="--x:8%;--y:66%;--w:28%"></i><i style="--x:40%;--y:38%;--w:20%"></i>
-        <i style="--x:63%;--y:22%;--w:29%"></i><i style="--x:39%;--y:70%;--w:49%"></i>
-      </div>
-      <h2>Your patterns start here.</h2>
-      <p>Logicで作ったMIDIをひとつ落とせば、それが最初のストック。</p>
+    <section class="library-panel hardware-panel">
+      <i class="screw s3"></i><i class="screw s4"></i>
+      <section class="grid" id="patternGrid" aria-live="polite"></section>
+      <section class="empty" id="emptyState">
+        <div class="empty-roll" aria-hidden="true"><i style="--x:8%;--y:66%;--w:28%"></i><i style="--x:40%;--y:38%;--w:20%"></i><i style="--x:63%;--y:22%;--w:29%"></i><i style="--x:39%;--y:70%;--w:49%"></i></div>
+        <h2>LOAD YOUR FIRST PATTERN</h2>
+        <p>MIDIを落とすだけ。名前もフォルダも必要なし。</p>
+      </section>
     </section>
   </main>
 
@@ -68,8 +62,8 @@
       <div class="card-foot">
         <div class="meta"><span class="bars">4 BEATS</span><span class="uses">0 USES</span></div>
         <div class="actions">
-          <button class="icon-action drag-action" title="MIDIを書き出し">↗</button>
-          <button class="copy-action">COPY</button>
+          <button class="icon-action export-action" title="MIDIを書き出し">↓</button>
+          <div class="drag-handle" draggable="true" role="button" tabindex="0">DRAG <b>→</b> LOGIC</div>
         </div>
       </div>
     </article>
